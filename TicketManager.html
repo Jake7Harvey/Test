@@ -1,0 +1,83 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outage Ticket Manager</title>
+    <link rel="stylesheet" href="C:\Users\jphar\OneDrive\Documents\1ExxoElectric\TicketMangerCSS.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>Ticket Manager</h1>
+        <a href="javascript:history.back()" class="back-button">
+            <img src="icons8-back-arrow-50.png" alt="Back Button" />
+        </a>
+    </header>
+
+    <div class="container">  <!-- Container starts here -->
+        <div class="column" id="SeverePriority">
+            <h2 class="column-title">Severe Priority</h2>
+        </div>
+        <div class="column" id="ModeratePriority">
+            <h2 class="column-title">Moderate Priority</h2>
+        </div>
+        <div class="column" id="LowPriority">
+            <h2 class="column-title">Low Priority</h2>
+        </div>
+    </div>  <!-- Container ends here -->
+
+    <!-- JavaScript to fetch and render tickets -->
+    <script>
+      async function fetchTickets() {
+        try {
+          const response = await fetch('http://localhost/phpmyadmin/index.php?route=/database/structure&server=1&db=userdata&table='); // Correct PHP URL
+          if (!response.ok) {
+            throw new Error('Failed to load tickets');
+          }
+          const tickets = await response.json(); // Parse JSON data
+          renderTickets(tickets);
+        } catch (error) {
+          console.error('Error fetching tickets:', error);
+        }
+      }
+
+      function renderTickets(tickets) {
+        const severe = document.querySelector('#SeverePriority');
+        const moderate = document.querySelector('#ModeratePriority');
+        const low = document.querySelector('#LowPriority');
+
+        severe.innerHTML = '<h2 class="column-title">Severe Priority</h2>';
+        moderate.innerHTML = '<h2 class="column-title">Moderate Priority</h2>';
+        low.innerHTML = '<h2 class="column-title">Low Priority</h2>';
+
+        tickets.forEach(ticket => {
+          const ticketDiv = document.createElement('div');
+          ticketDiv.className = 'ticket';
+          ticketDiv.innerHTML = `
+            <p><strong>ID:</strong> ${ticket.id}</p>
+            <p><strong>Title:</strong> ${ticket.title}</p>
+            <p><strong>Description:</strong> ${ticket.description}</p>
+            <p><strong>Status:</strong> ${ticket.status}</p>
+          `;
+
+          if (ticket.status === 'Severe') {
+            severe.appendChild(ticketDiv);
+          } else if (ticket.status === 'Moderate') {
+            moderate.appendChild(ticketDiv);
+          } else {
+            low.appendChild(ticketDiv);
+          }
+        });
+      }
+
+      // Fetch tickets on page load
+      window.onload = fetchTickets;
+    </script>
+
+</body>
+</html>
