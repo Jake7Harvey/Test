@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Signup</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type"text/css" href="ExoElectricStyles.css">
+ 
+</head>
+<body>
+
+   <div align="center">
+      <img src="LongLogo_Blk.png" alt="ExoElectric Logo" width="50%" height"auto"> 
+      <br> <br>
+   </div>
+    
+    <div class="wrapper">
+        <input id="toggler" type="checkbox">
+        <label for="toggler">
+        <img src="MenuBar.png" alt="" width="10%" height="auto">
+        </label>
+   <div class="dropdown">
+        <a href="index.html">Home</a>
+        <a href="MyRequests.html">My Requests</a>
+        <a href="ReportanOutage.html">Report an Outage</a>
+        <a href="MaintenanceRequest.html">Preventative Maintenance Request</a>
+        <a href="RequestTechnician.html">Request a Technician</a>
+    </div>
+
+    <div align=left style="color:#395C6B">
+    <h1>Signup</h1>
+<!--The below code creates entry fields and labels for the various inputs-->   
+    <form action="process-signup.php" method="post" id="signup" novalidate style="margin-left: 10px">
+        <div>
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name"> <br><br><br>
+        </div>
+        
+        <div>
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email"> <br><br><br>
+        </div>
+        
+        <div>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password"> <br><br><br>
+        </div>
+        <div>
+            <label for="address">Address</label>
+            <input type="text" id="address" name="address"> <br><br><br>
+        </div>
+        <div>
+            <label for="phone_number">Phone Number</label>
+            <input type="text" id="phone_number" name="phone_number"> <br><br><br>
+        </div>
+        
+        <button class="button-2">Sign up</button>
+    </form>
+    </div>
+    
+</body>
+</html>
