@@ -1,63 +1,82 @@
 <?php
 session_start();
-// Initialize a variable to check if the login is invalid
 $is_invalid = false;
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    // Connect to the database
     $mysqli = require __DIR__ . "/database.php";
-    
-    // Sanitize email input to prevent SQL injection
-    $email = $mysqli->real_escape_string($_POST["email"]);
-    
-    // Query the database for the user with the given email
-    $sql = "SELECT * FROM user WHERE email = '$email'";
-    $result = $mysqli->query($sql);
+
+    $stmt = $mysqli->prepare("SELECT * FROM user WHERE email = ?");
+    $stmt->bind_param("s", $_POST["email"]);
+    $stmt->execute();
+    $result = $stmt->get_result();
     $user = $result->fetch_assoc();
-    
-    // If user exists and the password matches
-    if ($user && $_POST["password"] == $user["password"]) {
+
+    if ($user && password_verify($_POST["password"], $user["password"])) {
         $_SESSION['email'] = $user['email'];
         $_SESSION['name'] = $user['name'];
         $_SESSION['image'] = $user['image']; 
         $_SESSION['id'] = $user['id']; 
         $_SESSION['authority'] = $user['authority'];
-        header("Location: index.php?email=" . urlencode($user['email']) . "&name=" . urlencode($user['name']) . "&authority=" . urlencode($user['authority']));
+        header("Location: index.php");
         exit;
     } else {
-        // Set invalid login flag if credentials don't match
         $is_invalid = true;
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
-<link rel="stylesheet" type="text/css" href="EXXOELECTRIC_FT.css">
-<head > 
-<div align="center">
-    <img src="LongLogo_Blk.png" alt="ExoElectric Logo" width="40%" height="auto"> 
-    
-    <title>Login</title>
+<head>
     <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="css/EXXOELECTRIC_FT.css">
+    <style>
+       /* Center the container */
+        .container {
+            width: 40%;
+            margin: auto;
+            background-color: #EAEAEA;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+        }
+        .container h1 {
+            color: #395C6B;
+        }
+        .container label {
+            color: #395C6B;
+            font-family: "Lucida Console", "Lucida", monospace;
+        }
+        .container input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #BCDBDC;
+            border-radius: 5px;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
 </head>
-
-<body align="center">
-    <h1>Login</h1>
-    
-    <?php if ($is_invalid): ?>
-        <em>Invalid login credentials. Please try again.</em>
-    <?php endif; ?>
-    
-    <form method="post">
-        <label for="email">Email</label>
-        <input type="email" name="email" id="email" value="<?= htmlspecialchars($_POST["email"] ?? "") ?>" required>
-        
-        <label for="password">Password</label>
-        <input type="password" name="password" id="password" required>
-        
-        <button type="submit">Log in</button>
-    </form>
-    
+<body>
+    <div align="center">
+        <img src="images/LongLogo_Blk.png" alt="ExoElectric Logo" width="50%" height="auto">
+    </div>
+    <div class="container">
+        <form method="post">
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" required>
+            
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" required>
+            
+            <button type="submit">Log in</button>
+        </form>
+        <?php if ($is_invalid): ?>
+            <em>Invalid login credentials. Please try again.</em>
+        <?php endif; ?>
+    </div>
 </body>
 </html>
